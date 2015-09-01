@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>.congu</comment>
+<entry key="MODEL_INSTANCES">1</entry>
+<entry key="VERIFY_ON_SAVE">true</entry>
+<entry key="SPECS_DIRECTORY">spec</entry>
+<entry key="TIMEOUT_MODEL_FINDING_AXIOMS">30000</entry>
+<entry key="TARGET_PATH">/home/pedro/workspace/Proj1_AED/spec/outputCongu</entry>
+<entry key="AXIOM_RESTRICTIONS">true</entry>
+<entry key="ATTEMPTS_MODEL_FINDING">3</entry>
+<entry key="TARGET_DIRECTORY">spec/outputCongu</entry>
+<entry key="SPECS_PATH">/home/pedro/workspace/Proj1_AED/spec</entry>
+<entry key="TIMEOUT_MODEL_FINDING">120000</entry>
+<entry key="VERBOSITY">VERBOSE</entry>
+</properties>
