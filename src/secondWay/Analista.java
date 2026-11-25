@@ -10,21 +10,21 @@ public class Analista {
 	private String [] listaPalavras;
 
 	/**
-	 * construtor que inicializa o argumento da classe
-	 * @param nameFile String com o nome do ficheiro que vai ser lido
+	 * Constructor that initializes the class field
+	 * @param nameFile String with the name of the file to read
 	 * @throws IOException 
-	 * @requires nameFile != null && name.equals("nome do ficheiro que eh introduzido pelo utilizador")
+	 * @requires nameFile != null && name.equals("file name entered by the user")
 	 */
 	public Analista(String nameFile) throws IOException{
 		this.listaPalavras = setListaPalavras(nameFile);
 	}
 
 	/**
-	 * le o ficheiro e coloca cada palavra num array de [] sem os caracteres que nao interessa analisar 
-	 * @param path String com o nome do ficheiro que vai ser lido
-	 * @return array de String preenchido com as palavras do ficheiro
+	 * Reads the file and puts each word in an array, skipping characters that are not relevant to the analysis 
+	 * @param path String with the name of the file to read
+	 * @return array of String filled with the words from the file
 	 * @throws IOException
-	 * @requires nameFile != null && name.equals("nome do ficheiro que eh introduzido pelo utilizador")
+	 * @requires nameFile != null && name.equals("file name entered by the user")
 	 */
 	private String[] setListaPalavras(String path) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(path));
@@ -42,16 +42,16 @@ public class Analista {
 	}
 
 	/**
-	 * getter do argumento listaPalavras
-	 * @return o argumento listaPalavras
+	 * Getter for the listaPalavras field
+	 * @return the listaPalavras field
 	 */
 	public String[] getListaPalavras() {
 		return listaPalavras;
 	}
 	/**
-	 * metodo que analisa a listaPalavras e conta o numero de palavras em que c ocorre i vezes
-	 * @param c char que irah ser comparado em cada palavra
-	 * @return array de integer em que c ocorre i vezes em cada palavra
+	 * Method that analyses listaPalavras and counts how many words contain c i times
+	 * @param c char to compare against each word
+	 * @return integer array with the number of words where c occurs i times
 	 */
 	public int [] quantasOcorrencias(char c){
 		int [] numOcorrenciasporLetra = new int [6];
@@ -92,10 +92,10 @@ public class Analista {
 	}
 
 	/**
-	 * metodo que escreve num ficheiro a lsita de todas as palavras 
-	 * comecadas com c bem como o numero de vezes que essas palavras ocorrem no texto
-	 * @param c letra que irah ser analisada
-	 * @param ficheiro nome do ficheiro em que vai ser escrita a informacao
+	 * Method that writes to a file the list of all words 
+	 * starting with c, along with how many times those words occur in the text
+	 * @param c letter to analyse
+	 * @param ficheiro name of the file where the information is written
 	 * @requires ficheiro != null
 	 * @throws IOException 
 	 */

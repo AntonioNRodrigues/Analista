@@ -3,62 +3,67 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-
+/**
+ * Analyses a text file and counts how often a letter occurs in each word.
+ *
+ * @author antonio
+ */
 public class Analista {
+	private static final String WORD_SEPARATOR = "\\s*[ ,.()]\\s*";
+
 	private String bigFrase;
-	/**
-	 * 
-	 * @param path
-	 * @throws IOException
-	 */
-	public Analista(String path) throws IOException{
-		this.bigFrase=setBigFrase(path);
+
+	public Analista(String path) throws IOException {
+		this.bigFrase = setBigFrase(path);
 	}
-	
-	/**
-	 * 
-	 * @param path
-	 * @return
-	 * @throws IOException
-	 */
+
 	public String setBigFrase(String path) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader(path));
 		StringBuilder sb = new StringBuilder();
-		String line;
-		while((line = in.readLine())!=null){
-			sb.append(line).append(" ");
+		try (BufferedReader in = new BufferedReader(new FileReader(path))) {
+			String line;
+			while ((line = in.readLine()) != null) {
+				sb.append(line).append(" ");
+			}
 		}
-		in.close();
 		return sb.toString();
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public String getBigFrase() {
 		return bigFrase;
 	}
-	/**
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public int [] quantasOcorrencias(char c){
-		int [] numOcorrenciasporLetra = new int [6];
-		String str = getBigFrase();
-		
-		for (String t : str.split("\\s*[ ,.()]\\s*")){
-			int count = 0;
-			for (int i = 0; i < t.length(); i++){
-				char cComparar = t.toLowerCase().charAt(i);	
-					if(cComparar == c){
-						count ++;
-					}
+
+	private String[] words() {
+		List<String> words = new ArrayList<String>();
+		for (String token : getBigFrase().split(WORD_SEPARATOR)) {
+			if (!token.isEmpty()) {
+				words.add(token);
 			}
-			
-		switch(count){
+		}
+		return words.toArray(new String[words.size()]);
+	}
+
+	/**
+	 * Returns, for the given letter, how many words contain it 0, 1, 2, 3, 4
+	 * or 5+ times. Matching is case-insensitive.
+	 */
+	public int[] quantasOcorrencias(char c) {
+		int[] numOcorrenciasporLetra = new int[6];
+		char letra = Character.toLowerCase(c);
+
+		for (String t : words()) {
+			int count = 0;
+			String lower = t.toLowerCase(Locale.ROOT);
+			for (int i = 0; i < lower.length(); i++) {
+				if (lower.charAt(i) == letra) {
+					count++;
+				}
+			}
+
+			switch (count) {
 			case 0:
 				numOcorrenciasporLetra[0]++;
 				break;
@@ -79,38 +84,40 @@ public class Analista {
 				break;
 			}
 		}
-	
+
 		return numOcorrenciasporLetra;
 	}
-	
+
 	/**
-	 * 
-	 * @param c
-	 * @param ficheiro
-	 * @throws IOException 
+	 * Writes all words starting with the given letter and their frequencies to
+	 * the output file. Matching and output are case-insensitive.
 	 */
-	public void listaPalavras(char c, String ficheiro) throws IOException{	
-		BufferedWriter out = new BufferedWriter(new FileWriter(ficheiro));
-		String [] listaString = getBigFrase().split(("\\s*[ ,.()]\\s*"));
-		String encontrou = "";
+	public void listaPalavras(char c, String ficheiro) throws IOException {
+		char letra = Character.toLowerCase(c);
+		String[] listaString = words();
 		StringBuilder sb = new StringBuilder();
-		
-		for(int i = 0; i < listaString.length; i++){
-			if(listaString[i].toLowerCase().charAt(0) == c){
-				int count = 0;
-				encontrou = listaString[i].toLowerCase();
-				for (int j = i; j < listaString.length; j++) {
-					if(encontrou.equals(listaString[j].toLowerCase())){
-						count++;
-						listaString[j] = " ";
-					}
+
+		try (BufferedWriter out = new BufferedWriter(new FileWriter(ficheiro))) {
+			for (int i = 0; i < listaString.length; i++) {
+				if (listaString[i].isEmpty()) {
+					continue;
 				}
-				sb.append(encontrou.toUpperCase()).append(" ");
-				sb.append(count).append("\n");
+
+				String encontrou = listaString[i].toLowerCase(Locale.ROOT);
+				if (encontrou.charAt(0) == letra) {
+					int count = 0;
+					for (int j = i; j < listaString.length; j++) {
+						if (!listaString[j].isEmpty()
+								&& encontrou.equals(listaString[j].toLowerCase(Locale.ROOT))) {
+							count++;
+							listaString[j] = "";
+						}
+					}
+					sb.append(encontrou.toUpperCase(Locale.ROOT)).append(" ");
+					sb.append(count).append("\n");
+				}
 			}
+			out.write(sb.toString());
 		}
-		out.write(sb.toString());
-		out.close();
 	}
-	
-	}
+}

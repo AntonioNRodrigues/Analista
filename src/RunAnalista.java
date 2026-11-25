@@ -1,92 +1,70 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Scanner;
 
-
+/**
+ * Interactive command line runner for {@link Analista}.
+ *
+ * Commands:
+ *   letter <letter>             writes <letter>.out with occurrence counts
+ *   words <letter> <output>     writes words starting with <letter>
+ *   quit                        exits
+ *
+ * The input file may be supplied with or without the .txt suffix.
+ *
+ * @author antonio
+ */
 public class RunAnalista {
 	private static final String EXT1 = ".txt";
 	private static final String EXT2 = ".out";
-	
-	
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
+
 	public static void main(String[] args) throws IOException {
-		
-		String str;
-		Scanner sc = new Scanner(System.in);
-		BufferedWriter out;
-		System.out.print("Introduza o nome do ficheiro: ");
-		str = sc.nextLine();
-		Analista a = new Analista(str+EXT1);
-		
-		while(!(str.equals("terminar"))){
-			System.out.print("Opção desejada: ");
-			str = sc.nextLine();
-			
-			if(str.startsWith("letra")){
-				out = new BufferedWriter(new FileWriter(str.charAt(str.length()-1)+EXT2));
-				int [] numeroOcorrencias = a.quantasOcorrencias(str.charAt(str.length()-1));
-					for (int j = 0; j <numeroOcorrencias.length; j++) {
-						if(j<=4){
-							out.write(j + " "+ numeroOcorrencias[j] + "\n");
-						}else  {
-							out.write(j + "+ "+ numeroOcorrencias[j] + "\n");
-							}
+		try (Scanner sc = new Scanner(System.in)) {
+			System.out.print("Enter the file name: ");
+			String nome = sc.nextLine().trim();
+			Analista a = new Analista(withTxtExtension(nome));
+
+			while (true) {
+				System.out.print("Choose an option: ");
+				String linha = sc.nextLine().trim();
+				if (linha.isEmpty()) {
+					continue;
+				}
+
+				String[] partes = linha.split("\\s+");
+				String comando = partes[0].toLowerCase(Locale.ROOT);
+
+				if (comando.equals("quit")) {
+					System.out.println("Session finished");
+					break;
+				}
+
+				if (comando.equals("letter") && partes.length >= 2) {
+					char letra = partes[1].charAt(0);
+					String nomeFicheiro = letra + EXT2;
+					int[] numeroOcorrencias = a.quantasOcorrencias(letra);
+					try (BufferedWriter out = new BufferedWriter(new FileWriter(nomeFicheiro))) {
+						for (int j = 0; j < numeroOcorrencias.length; j++) {
+							out.write((j <= 4 ? String.valueOf(j) : j + "+") + " "
+									+ numeroOcorrencias[j] + "\n");
 						}
-						out.close();
-						System.out.println("Ficheiro "+ str.charAt(str.length()-1)+EXT2+ " gravado com sucesso.");
-			}else if(str.startsWith("ficheiro")){
-				char letra = encontraLetra(str);
-				String nomeFicheiro = selecionaNomeFicheiro(str);
-				a.listaPalavras(letra, nomeFicheiro);
-				System.out.println("Ficheiro "+ nomeFicheiro+ " gravado com sucesso.");
-				
-			}
-			else if(str.equals("terminar")){
-				
-				System.out.println("Sessão terminada");
-			}
-		}	
-	}
-
-	
-	/**
-	 * 
-	 * @param str
-	 * @return
-	 */
-	private static String selecionaNomeFicheiro(String str) {
-		StringBuilder nomeFile = new StringBuilder();
-		int count = 0;
-		int i = 0;
-		while (count !=2 && i < str.length()){
-			if(str.charAt(i)== ' '){
-				count++;
-			}
-			i++;
-		}
-		nomeFile.append(str.substring(i, str.length()));
-	
-		return nomeFile.toString();
-	}
-
-	/**
-	 * 
-	 * @param str
-	 * @return
-	 */
-	private static char encontraLetra(String str) {
-		char letra = 0;
-		for (int i = str.length()-1; i > 0; i--) {
-			if(str.charAt(i) == ' '){
-				letra = str.charAt(i+1);
+					}
+					System.out.println("File " + nomeFicheiro + " written successfully.");
+				} else if (comando.equals("words") && partes.length >= 3) {
+					char letra = partes[1].charAt(0);
+					String nomeFicheiro = partes[2];
+					a.listaPalavras(letra, nomeFicheiro);
+					System.out.println("File " + nomeFicheiro + " written successfully.");
+				} else {
+					System.out.println("Unknown command. Use: letter <letter>, words <letter> <file>, or quit.");
+				}
 			}
 		}
-		return letra;
 	}
-	
 
+	private static String withTxtExtension(String nome) {
+		return nome.toLowerCase(Locale.ROOT).endsWith(EXT1) ? nome : nome + EXT1;
+	}
 }
