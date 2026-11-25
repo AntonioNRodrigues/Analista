@@ -19,15 +19,15 @@ public class RunAnalista {
 		String str;
 		Scanner sc = new Scanner(System.in);
 		BufferedWriter out;
-		System.out.print("Introduza o nome do ficheiro: ");
+		System.out.print("Enter the file name: ");
 		str = sc.nextLine();
 		Analista a = new Analista(str+EXT1);
 		
-		while(!(str.equals("terminar"))){
-			System.out.print("Opção desejada: ");
+		while(!(str.equals("quit"))){
+			System.out.print("Choose an option: ");
 			str = sc.nextLine();
 			
-			if(str.startsWith("letra")){
+			if(str.startsWith("letter")){
 				out = new BufferedWriter(new FileWriter(str.charAt(str.length()-1)+EXT2));
 				int [] numeroOcorrencias = a.quantasOcorrencias(str.charAt(str.length()-1));
 					for (int j = 0; j <numeroOcorrencias.length; j++) {
@@ -38,27 +38,27 @@ public class RunAnalista {
 							}
 						}
 						out.close();
-						System.out.println("Ficheiro "+ str.charAt(str.length()-1)+EXT2+ " gravado com sucesso.");
-			}else if(str.startsWith("ficheiro")){
+						System.out.println("File "+ str.charAt(str.length()-1)+EXT2+ " written successfully.");
+			}else if(str.startsWith("words")){
 				char letra = encontraLetra(str);
 				String nomeFicheiro = selecionaNomeFicheiro(str);
 				a.listaPalavras(letra, nomeFicheiro);
-				System.out.println("Ficheiro "+ nomeFicheiro+ " gravado com sucesso.");
+				System.out.println("File "+ nomeFicheiro+ " written successfully.");
 				
 			}
-			else if(str.equals("terminar")){
+			else if(str.equals("quit")){
 				
-				System.out.println("Sessão terminada");
+				System.out.println("Session finished");
 			}
 		}	
 	}
 
 	
 	/**
-	 * metodo auxiliar para retirar da String fornecida pelo utilizador o nome do ficheiro
-	 * @param str string introduzida pelo utilizador
-	 * @return string com o nome do ficheiro
-	 * @requires str.equals("ficheiro n nomeficheiro")
+	 * Helper method that extracts the file name from the string supplied by the user
+	 * @param str string entered by the user
+	 * @return string with the file name
+	 * @requires str.equals("words n filename")
 	 */
 	private static String selecionaNomeFicheiro(String str) {
 		StringBuilder nomeFile = new StringBuilder();
@@ -76,10 +76,10 @@ public class RunAnalista {
 	}
 
 	/**
-	 * metodo que isola a letra a ser analisada
-	 * @param str string introduzida pelo utilizador
-	 * @return char com a letra a ser analisada
-	 * @requires str.equals("ficheiro n nomeficheiro")
+	 * Method that isolates the letter to analyse
+	 * @param str string entered by the user
+	 * @return char with the letter to analyse
+	 * @requires str.equals("words n filename")
 	 */
 	private static char encontraLetra(String str) {
 		char letra = 0;
